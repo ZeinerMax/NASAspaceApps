@@ -1,0 +1,18 @@
+1. Prevence pěti hlavních hrozeb vesmíru
+
+• Vesmírná radiace (Space Radiation). Kosmické lodě využívají stínění z materiálů bohatých na vodík (například polyethylen a nádrže s vodou) a mají speciální úkryty pro případ slunečních bouří. Dávku ozáření hlídají osobní dozimetry a zkracování doby přeletů.
+• Izolace a uzavřený prostor (Isolation and Confinement). Prevencí je pečlivý psychologický výběr posádky, pravidelné videohovory s rodinou a psychology, dostatek volného času na koníčky a pěstování rostlin na palubě. K udržení zdravého spánku slouží dynamické LED osvětlení simulující pozemský den a noc.
+• Vzdálenost od Země (Distance from Earth). Protože při cestách na Měsíc či Mars nelze poslat rychlou pomoc ani zásoby, posádka prochází pokročilým lékařským výcvikem. Loď je vybavena autonomními diagnostickými přístroji, telemedicínou a palubní lékárnou pro samostatné řešení akutních stavů.
+• Změněná gravitace (Gravity Fields). Úbytku svalů, řídnutí kostí a oslabení srdce brání dvouhodinové každodenní cvičení na speciálních strojích (běhací pás, rotoped, posilovací systém ARED) doplněné stravou bohatou na vápník a vitamín D. Proti přesunu tekutin do hlavy se používají stehenní manžety a podtlakové kalhoty.
+• Nepřátelské uzavřené prostředí (Hostile Closed Environments). Obytný prostor funguje jako uzavřený ekosystém s neustálou filtrací vzduchu a recyklací vody. Posádka pravidelně dezinfikuje povrchy a odebírá stěry, aby se v lodi nepřemnožily nebezpečné bakterie a plísně, které by napadly oslabenou imunitu.
+
+2. Význam sledovaných zdravotních ukazatelů (Self-Assessment)
+
+Na dlouhých misích musí astronauti sami včas odhalit počínající zdravotní problém. K tomu jim slouží pravidelné měření těchto šesti klíčových parametrů:
+
+Ukazatel	Co ve vesmíru odhaluje a čemu předchází
+Krevní tlak a tepová frekvence	Odhaluje adaptaci srdce na beztíži, dehydrataci nebo oslabení cévního systému (riziko omdlení při návratu do gravitace).
+Hladina cukru v krvi	Hlídá správný metabolismus a dostatečný příjem energie, protože astronauti ve vesmíru často trpí nechutenstvím a hubnou.
+Tělesná teplota	Slouží jako včasné varování před infekcí, zánětem nebo reaktivací spících virů vlivem oslabené imunity.
+Denní počet hodin spánku	Upozorňuje na narušení biorytmu a chronickou únavu, která zvyšuje riziko chyb při ovládání lodi.
+Nálada (Mood)	Pomáhá včas zachytit počínající úzkost, deprese, syndrom vyhoření nebo napětí v týmu z důvodu izolace.

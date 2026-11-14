@@ -1,0 +1,64 @@
+1. Calculation Logic: How Weights Vary Based on the Astronaut’s Profile
+
+The basis is the astronaut’s body weight (W) on Earth. In microgravity, the body weight and the weight of the dumbbell are not added together; instead, the ARED machine (in the ARED/ARES app) must generate the entire load.
+
+Step A: Base Multiplier Based on Body Weight (W)
+
+Each exercise has its own coefficient by which the astronaut’s weight is multiplied:
+• Back Squat: 1.6 × W
+• Deadlift: 1.75 × W
+• Heel Raises: 1.4 × W
+• Bench Press: 0.85 × W
+• Bent-Over Row: 0.8 × W
+• Shoulder Press: 0.6 × W
+• T2 Treadmill Harness Row: 0.75 × W (75% of body weight)
+
+Step B: Adjustment Based on Gender, Age, and Morning Check-In
+
+The app then multiplies the resulting weight from Step A by these coefficients (and rounds to the nearest 2.5 kg or 5 kg):
+• Gender:
+    • Male: × 1.00 (base coefficient)
+    • Female: × 0.80 for lower-body exercises / × 0.70 for upper-body exercises
+• Age:
+    • Up to 40 years: × 1.00
+	• 41–50 years: × 0.95 (slight reduction in load to protect the joints)
+    • Over 50 years: × 0.90
+• Bonus – Integration with the morning “Daily Check-in” (a smarter app feature):
+    • If an astronaut reports poor sleep or high fatigue in the morning, the app automatically reduces the weights by 10% (× 0.90) and shortens the run to 30 minutes to prevent overtraining.
+
+
+2. Comparison Table of Examples (What the System Generates)
+
+Here’s how the daily schedule changes for three different crew members (all in Maintenance mode):
+
+Parameter / Exercise    Astronaut A (Male, 35 years old, 80 kg)    Astronaut B (Female, 32 years old, 60 kg)	Astronaut C (Male, 52 years old, 75 kg)
+1. Squats (4 × 8)    130 kg    75 kg    110 kg
+2. Deadlifts (4 × 8)    140 kg    85 kg    120 kg
+3. Calf raises (3 × 12)	110 kg    65 kg    95 kg
+4. Bench press (3 × 10)    70 kg    35 kg    55 kg
+5. Bent-over rows (3 × 10)    65 kg    35 kg    55 kg
+6. Shoulder presses (3 × 10)    50 kg    25 kg    40 kg
+Total weight lifted on the ARED    12,520 kg    7,170 kg    10,560 kg
+Resistance of the T2 treadmill straps    60 kg (75%)    45 kg (75%)    55 kg (75%)
+T2 treadmill run (45 min)    Pace 10–13 km/h    Pace 9.5–12 km/h    Pace 9–11.5 km/h
+
+3. What it might look like on the website (UI / Summary screen)
+
+After clicking the “Start Workout” button, the user will see a clear overview of today’s session:
+TODAY’S WORKOUT PROTOCOL (Day A – Maintenance)
+• Estimated time: 1 hr 45 min | Target weight: 12,520 kg | Check-in status: Optimal (100% load)
+PHASE 1: STRENGTH TRAINING – ARED (60 min)
+• Squats: 4 sets × 8 reps — 130 kg (2-minute rest)
+• Deadlifts: 4 sets × 8 reps — 140 kg (2-minute rest)
+• Standing calf raises: 3 sets × 12 reps — 110 kg (90-second rest)
+• Bench press: 3 sets × 10 reps — 70 kg (2-minute rest)
+• Barbell rows: 3 sets × 10 reps — 65 kg (90-second rest)
+• Shoulder presses: 3 sets × 10 reps — 50 kg (90-second rest)
+PHASE 2: CARDIO – T2 TREADMILL (45 min)
+• Treadmill settings: 60 kg (75% of body weight)
+• 10 min: Warm-up (8.5 km/h)
+• 25 min: 5 intervals (3 min running at 13 km/h / 2 min walking at 7 km/h)
+• 10 min: Cool-down (6 km/h)
+[ Button: Finish workout and save to log ]
+
+Translated with DeepL.com (free version)
