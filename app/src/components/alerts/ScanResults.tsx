@@ -27,10 +27,10 @@ export default function ScanResults({ crewId, flightDay }: { crewId: CrewId; fli
   return (
     <Modal
       wide
-      title={<>Scan results · {crew.displayName} · FD {flightDay}</>}
+      title={<>Check-in results · {crew.displayName} · day {flightDay}</>}
       icon={<StatusChip status={day.overall} />}
       onClose={dismiss}
-      footer={<><span className="dim" style={{ flex: 1, fontSize: 15 }}>The body map, charts and rules have been updated.</span><button className="btn btn-primary" onClick={dismiss}>Show body scan →</button></>}
+      footer={<><span style={{ flex: 1 }} /><button className="btn btn-primary" onClick={dismiss}>Show details →</button></>}
     >
       <div style={{ display: 'grid', gridTemplateColumns: '150px 1fr', gap: 22 }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10, alignItems: 'center' }}>
@@ -51,13 +51,18 @@ export default function ScanResults({ crewId, flightDay }: { crewId: CrewId; fli
                 </div>
                 <div className="dim" style={{ fontSize: 16 }}>{r.reason}</div>
                 <ActionBox result={r} />
-                {r.status !== 'grey' && problems.map((p) => (
-                  <div key={p.id} style={{ fontSize: 16 }}>
-                    <strong>{p.title}: </strong>
-                    {p.response && <span><span style={{ color: 'var(--accent)' }}>Response</span> {p.response} </span>}
-                    {p.prevention && <span><span style={{ color: 'var(--green)' }}>Prevention</span> {p.prevention}</span>}
-                  </div>
-                ))}
+                {r.status !== 'grey' && problems.length > 0 && (
+                  <details className="more">
+                    <summary>Problem & solution</summary>
+                    {problems.map((p) => (
+                      <div key={p.id} style={{ fontSize: 16, marginTop: 6 }}>
+                        <strong>{p.title}</strong>
+                        {p.response && <p><span style={{ color: 'var(--accent)' }}>Solution: </span>{p.response}</p>}
+                        {p.prevention && <p className="dim" style={{ fontSize: 15 }}><span style={{ color: 'var(--green)' }}>Prevention: </span>{p.prevention}</p>}
+                      </div>
+                    ))}
+                  </details>
+                )}
               </div>
             );
           })}

@@ -1,4 +1,5 @@
-// Ship tab: live (SIMULATED) cabin air with trend, radiation (ship-wide, from radiation.json), responses.
+// Ship details (opened from the landing page): live SIMULATED cabin air with a mini trend, and radiation (ship-wide).
+// Short cards; the response / prevention text appears only when something is not green, or on demand.
 import { Line, LineChart, ResponsiveContainer, YAxis } from 'recharts';
 import type { RuleResult, ShipReading } from '../../types';
 import { useAppStore } from '../../store/useAppStore';
@@ -20,16 +21,16 @@ export default function ShipTab({ ship }: { ship: RuleResult[] }) {
   const card = (r: RuleResult) => {
     const rule = ruleById(r.ruleId);
     const key = SERIES[r.ruleId];
+    const bad = r.status === 'orange' || r.status === 'red';
     return (
-      <div key={r.ruleId} className="panel" style={{ padding: 14, display: 'flex', flexDirection: 'column', gap: 6, borderColor: `color-mix(in srgb, ${STATUS_COLOR[r.status]} 40%, transparent)` }}>
+      <div key={r.ruleId} className="panel" style={{ padding: 12, display: 'flex', flexDirection: 'column', gap: 4, borderColor: `color-mix(in srgb, ${STATUS_COLOR[r.status]} 40%, transparent)` }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <strong style={{ flex: 1 }}>{rule.label}</strong>
+          <strong style={{ flex: 1, fontSize: 16 }}>{rule.label}</strong>
           <StatusChip status={r.status} />
         </div>
-        <div className="mono" style={{ fontSize: 26, color: STATUS_COLOR[r.status] }}>{r.valueLabel.split(' · ')[0]}</div>
-        {r.valueLabel.includes(' · ') && <div className="mono dim" style={{ fontSize: 14 }}>{r.valueLabel.split(' · ')[1]}</div>}
+        <div className="mono" style={{ fontSize: 24, color: STATUS_COLOR[r.status] }}>{r.status === 'grey' ? '—' : r.valueLabel.split(' · ')[0]}</div>
         {key && history.length > 1 && (
-          <div style={{ height: 50 }}>
+          <div style={{ height: 40 }}>
             <ResponsiveContainer>
               <LineChart data={history}>
                 <YAxis hide domain={['dataMin - 0.5', 'dataMax + 0.5']} />
@@ -38,9 +39,7 @@ export default function ShipTab({ ship }: { ship: RuleResult[] }) {
             </ResponsiveContainer>
           </div>
         )}
-        <div className="dim" style={{ fontSize: 14 }}>{r.reason}</div>
-        <div className="faint" style={{ fontSize: 13 }}>Green {rule.green} · Orange {rule.orange} · Red {rule.red}</div>
-        <ActionBox result={r} compact />
+        {bad && <><div className="dim" style={{ fontSize: 15 }}>{r.reason}</div><ActionBox result={r} compact /></>}
       </div>
     );
   };
@@ -51,25 +50,20 @@ export default function ShipTab({ ship }: { ship: RuleResult[] }) {
   const radBad = rad.some((r) => r.status === 'orange' || r.status === 'red');
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 16, paddingBottom: 140 }}>
-      <section style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <h3>Cabin air</h3><SimTag />
-          <span className="dim" style={{ fontSize: 15 }}>Simulated live feed, updates every 2 s. Measured by the ship, the same for all crew.</span>
-        </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 12 }}>{cabin.map(card)}</div>
-        {cabinBad && <p><strong style={{ color: 'var(--accent)' }}>Response: </strong>{airProblem.response}</p>}
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+      <section style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}><h3>Cabin air</h3><SimTag /></div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 10 }}>{cabin.map(card)}</div>
+        {cabinBad && <p><strong style={{ color: 'var(--accent)' }}>Solution: </strong>{airProblem.response}</p>}
       </section>
-      <section style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+      <section style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <h3>Radiation</h3>
-          <span className="dim" style={{ fontSize: 15 }}>
-            Ship-wide dosimetry. {SEED_RADIATION.length ? `${SEED_RADIATION.length} days loaded from radiation.json.` : 'No data yet: add radiation.json to the repo root (format in PLAN.md §5.2).'}
-          </span>
+          {!SEED_RADIATION.length && <span className="dim" style={{ fontSize: 15 }}>No data yet (radiation.json)</span>}
         </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 12 }}>{rad.map(card)}</div>
-        {radBad && <p><strong style={{ color: 'var(--accent)' }}>Response: </strong>{radProblem.response}</p>}
-        <p className="dim" style={{ fontSize: 15 }}><strong>Prevention: </strong>{radProblem.prevention}</p>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 10 }}>{rad.map(card)}</div>
+        {radBad && <p><strong style={{ color: 'var(--accent)' }}>Solution: </strong>{radProblem.response}</p>}
+        <details className="more"><summary>Radiation prevention</summary><p className="dim" style={{ fontSize: 15 }}>{radProblem.prevention}</p></details>
       </section>
     </div>
   );

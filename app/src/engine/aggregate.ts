@@ -42,7 +42,7 @@ export function overallStatus(results: RuleResult[]): Status {
   return worst(results.filter((r) => r.ruleId.startsWith('CH-')).map((r) => r.status));
 }
 
-export function hazardStatuses(results: RuleResult[]): Record<HazardId, Status> {
+export function hazardStatuses(results: Pick<RuleResult, 'ruleId' | 'status'>[]): Record<HazardId, Status> {
   const byId = new Map(results.map((r) => [r.ruleId, r]));
   const out = {} as Record<HazardId, Status>;
   for (const h of HAZARDS) {

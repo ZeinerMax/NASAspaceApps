@@ -67,7 +67,7 @@ export default function CheckInWizard({ crewId }: { crewId: CrewId }) {
     { title: 'Heart & lungs', mascot: 'measure', line: 'Rest 5 minutes in your usual posture, then measure blood pressure and heart rate.', fields: ['sys', 'dia', 'hr', 'spo2', 'resp'] },
     { title: 'Temperature & glucose', mascot: 'default', line: 'At rest, and before breakfast for glucose (8 h fasting).', fields: ['temp', 'glucose'] },
     { title: 'Body mass', mascot: 'default', line: 'Use the mass-measurement device. Normal scales don\'t work in weightlessness.', fields: ['mass'] },
-    { title: 'Review & submit', mascot: 'good', line: 'All done! Check your answers and submit the scan.', fields: [] },
+    { title: 'Review', mascot: 'good', line: 'All done! Check your answers and submit.', fields: [] },
   ];
   const cur = steps[step];
 
@@ -144,7 +144,7 @@ export default function CheckInWizard({ crewId }: { crewId: CrewId }) {
             <button className="btn" disabled={step === 0} onClick={() => setStep(step - 1)}>Back</button>
             {step < steps.length - 1
               ? <button className="btn btn-primary" disabled={stepInvalid} onClick={() => setStep(step + 1)}>Next</button>
-              : <button className="btn btn-primary" onClick={submit}>Submit scan ✓</button>}
+              : <button className="btn btn-primary" onClick={submit}>Submit ✓</button>}
           </>
         }
       >

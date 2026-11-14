@@ -2,7 +2,7 @@
 import { useMemo } from 'react';
 import type { CrewId, DailyEntry, HazardId, RegionId, RuleResult, Status } from '../types';
 import { SEED_ENTRIES, SEED_RADIATION } from '../data/seed';
-import { crewById } from '../data/crew';
+import { CREW, crewById } from '../data/crew';
 import { evaluateEntry } from '../engine/evaluate';
 import { hazardStatuses, overallStatus, regionStatuses } from '../engine/aggregate';
 import { evaluateShip } from '../engine/ship';
@@ -35,6 +35,20 @@ export function useTimeline(crewId: CrewId): DayView[] {
   return useMemo(() => buildTimeline(crewId, userEntries), [crewId, userEntries]);
 }
 
+/** Timelines and latest day of ALL crew members (for the crew selector and landing page). */
+export function useAllCrew() {
+  const userEntries = useAppStore((s) => s.userEntries);
+  return useMemo(() => {
+    const timelines = {} as Record<CrewId, DayView[]>;
+    const latest = {} as Record<CrewId, DayView>;
+    for (const c of CREW) {
+      timelines[c.id] = buildTimeline(c.id, userEntries);
+      latest[c.id] = timelines[c.id][timelines[c.id].length - 1];
+    }
+    return { timelines, latest };
+  }, [userEntries]);
+}
+
 /** The day being viewed (viewDay or latest). */
 export function useDayView(crewId: CrewId): { timeline: DayView[]; day: DayView } {
   const timeline = useTimeline(crewId);
@@ -52,6 +66,15 @@ export function useShipResults(flightDay: number): RuleResult[] {
   return useMemo(() => evaluateShip(ship, radiationFor(flightDay)), [ship, flightDay]);
 }
 
-export function useHazards(day: DayView, ship: RuleResult[]): Record<HazardId, Status> {
+/**
+ * Ship rule STATUSES only (no values). Unlike useShipResults this does not re-render its component on every
+ * 2 s feed tick, only when a status actually changes. Use it where the ship values are not shown.
+ */
+export function useShipStatuses(flightDay: number): { ruleId: string; status: Status }[] {
+  const key = useAppStore((s) => evaluateShip(s.ship, radiationFor(flightDay)).map((r) => `${r.ruleId}:${r.status}`).join('|'));
+  return useMemo(() => key.split('|').map((p) => { const [ruleId, status] = p.split(':'); return { ruleId, status: status as Status }; }), [key]);
+}
+
+export function useHazards(day: DayView, ship: { ruleId: string; status: Status }[]): Record<HazardId, Status> {
   return useMemo(() => hazardStatuses([...day.results, ...ship]), [day, ship]);
 }
