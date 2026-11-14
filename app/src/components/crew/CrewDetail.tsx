@@ -8,7 +8,7 @@ import { mascotForStatus } from '../../data/mascot';
 import { todayIso, useAppStore, type Tab } from '../../store/useAppStore';
 import { useDayView, useHazards, useShipStatuses } from '../../store/useCrewView';
 import { StatusChip } from '../common';
-import AnatomyBody from '../body/AnatomyBody';
+import BodyScene from '../body/BodyScene';
 import RegionPanel from '../body/RegionPanel';
 import HazardView from '../body/HazardView';
 import Mascot from '../mascot/Mascot';
@@ -84,7 +84,7 @@ export default function CrewDetail({ crewId }: { crewId: CrewId }) {
       {tab === 'details' && (
         <div className="details-grid">
           <div className="panel details-body">
-            <AnatomyBody sex={crew.sex} regionStatus={day.regions} selected={region} onSelect={setRegion} />
+            <BodyScene sex={crew.sex} regionStatus={day.regions} selected={region} onSelect={setRegion} />
           </div>
           <div className="panel scroll details-side">
             <div style={{ display: 'flex', gap: 6, marginBottom: 12 }}>

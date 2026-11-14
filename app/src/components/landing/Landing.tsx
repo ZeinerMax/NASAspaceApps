@@ -10,7 +10,7 @@ import { statusRank } from '../../engine/aggregate';
 import { todayIso, useAppStore } from '../../store/useAppStore';
 import { useAllCrew, useShipResults } from '../../store/useCrewView';
 import { Modal, StatusChip, STATUS_COLOR } from '../common';
-import AnatomyBody from '../body/AnatomyBody';
+import BodyScene from '../body/BodyScene';
 import CrewSelector from '../crew/CrewSelector';
 import Mascot from '../mascot/Mascot';
 import ShipStrip from '../ship/ShipStrip';
@@ -53,25 +53,27 @@ export default function Landing() {
     <div className="landing">
       <CrewSelector value={crewId} onChange={setLandingCrew} latest={latest} />
 
-      <AnimatePresence mode="wait" initial={false}>
-        <motion.article
-          key={crewId}
-          className="panel landing-card"
-          role="button"
-          tabIndex={0}
-          aria-label={`Open details of ${crew.displayName}`}
-          onClick={() => selectCrew(crewId)}
-          onKeyDown={(e) => { if (e.key === 'Enter') selectCrew(crewId); }}
-          initial={{ opacity: 0, x: 24 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -24 }}
-          transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
-          style={{ borderColor: `color-mix(in srgb, ${STATUS_COLOR[day.overall]} 45%, transparent)`, boxShadow: day.overall === 'red' ? `0 0 40px -12px ${STATUS_COLOR.red}` : undefined }}
-        >
-          <div className="landing-body">
-            <AnatomyBody sex={crew.sex} regionStatus={day.regions} />
-          </div>
-          <div className="landing-info">
+      <article
+        className="panel landing-card"
+        role="button"
+        tabIndex={0}
+        aria-label={`Open details of ${crew.displayName}`}
+        onClick={() => selectCrew(crewId)}
+        onKeyDown={(e) => { if (e.key === 'Enter') selectCrew(crewId); }}
+        style={{ borderColor: `color-mix(in srgb, ${STATUS_COLOR[day.overall]} 45%, transparent)`, boxShadow: day.overall === 'red' ? `0 0 40px -12px ${STATUS_COLOR.red}` : undefined }}
+      >
+        <div className="landing-body">
+          <BodyScene sex={crew.sex} regionStatus={day.regions} interactive={false} />
+        </div>
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.div
+            key={crewId}
+            className="landing-info"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            transition={{ duration: 0.16, ease: [0.22, 1, 0.36, 1] }}
+          >
             <div>
               <h2 style={{ fontSize: 30 }}>{crew.displayName}</h2>
               <div className="dim">{crew.sex === 'female' ? 'Female' : 'Male'} · {crew.ageYears} y · day {day.entry.flightDay}</div>
@@ -105,9 +107,9 @@ export default function Landing() {
               <button className="btn btn-primary" onClick={(e) => { e.stopPropagation(); selectCrew(crewId); }}>Details →</button>
               <button className="btn" disabled={doneToday} onClick={(e) => { e.stopPropagation(); openCheckIn(crewId); }}>{doneToday ? '✓ Done today' : '+ Check-in'}</button>
             </div>
-          </div>
-        </motion.article>
-      </AnimatePresence>
+          </motion.div>
+        </AnimatePresence>
+      </article>
 
       <ShipPanel flightDay={day.entry.flightDay} headache={headache} />
       <Mascot mood={mascotForStatus(day.overall, { name: crew.id, sick })} />

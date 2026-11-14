@@ -20,16 +20,6 @@ const map = {
   'Buscuit_measure_heart.jpg': 'measure.jpg',
 };
 
-// Body images (repo root, read only) → public/body. Used as is; overlays are drawn on top in the app.
-const bodyOut = join(here, '..', 'public', 'body');
-mkdirSync(bodyOut, { recursive: true });
-const bodyMap = { 'male_body_anatomy.jpg': 'male.jpg', 'femal_body_anatomy.jpg': 'female.jpg' };
-for (const [from, to] of Object.entries(bodyMap)) {
-  const src = join(here, '..', '..', from);
-  if (!existsSync(src)) console.warn(`body image missing in repo root: ${from}`);
-  else copyFileSync(src, join(bodyOut, to));
-}
-
 let n = 0;
 for (const [from, to] of Object.entries(map)) {
   const src = join(srcDir, from);

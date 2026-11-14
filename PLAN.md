@@ -7,8 +7,8 @@
 > **UI update (14 Nov, after the first build): the interface was simplified. This note overrides §6 (3D body) and §9 (screens).**
 > Landing page = one crew member at a time (selector on top) + a compact SIMULATED ship strip, all in one window; ship details open from that strip.
 > Detail view = tabs *Details | Trends | Problems* (no ship information). **Rules** moved to the header, next to Data.
-> The 3D body is replaced by the team's anatomy images (`male_body_anatomy.jpg`, `femal_body_anatomy.jpg`) with colour overlays
-> on the affected organs (orange / red); all positions live in `app/src/components/body/bodyConfig.ts`. No demo mode, no scan animation.
+> The 3D body stays (stylised, built in code; no text labels, no scan animation). The anatomy-image version was tried and rolled back. The Body tab
+> is compact and centred, with the key numbers next to each region. No demo mode.
 > Trends: no personal-range band; every point is a filled dot coloured by status. The mascot can be hidden (remembered for the session).
 
 ---

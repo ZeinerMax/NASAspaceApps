@@ -2,7 +2,7 @@
 
 NASA Space Apps Challenge 2026: "Create Health Monitoring Software for Astronauts on Space Missions".
 
-This is a dashboard for 4 crew members. The landing page shows one crew member at a time with a compact (simulated) ship strip. The detail view has an anatomy image with highlighted organs (orange = warning, red = act now), trends, problems and solutions. The Rules page is in the header. A daily check-in adds new data, and the mascot Dr. Biscuit guides the user (and can be hidden).
+This is a dashboard for 4 crew members. The landing page shows one crew member at a time with a compact (simulated) ship strip. The detail view has a 3D body (green / orange / red regions, click a region for details) with a compact list of the key numbers per region, plus trends, problems and solutions. The Rules page is in the header. A daily check-in adds new data, and the mascot Dr. Biscuit guides the user (and can be hidden).
 
 > **Prototype for decision support only.** Not a diagnostic or predictive tool and not a replacement for flight surgeon judgement.
 
@@ -60,7 +60,7 @@ new daily check-ins ──► localStorage 'astroHealth.v1' ──────�
 | `src/data/symptoms.ts`, `regions.ts`, `hazards.ts`, `problems.ts` | Content (translated from the team's Czech files) | content |
 | `src/data/explanations.ts` | "How to measure" texts (**drafts, need verification**) | content |
 | `src/data/mascot.ts` | Which mascot image and line to show | design |
-| `src/components/body/` | `AnatomyBody` (image + overlays), `bodyConfig.ts` (**all overlay positions**), `silhouette.ts`, region panel, hazards | body |
+| `src/components/body/` | 3D body (`BodyScene`, `StylizedBody`, `GltfBody` stub), region panel, five-hazard view | body |
 | `src/components/checkin/` | Daily check-in wizard, how-to modal | UI |
 | `src/components/trends/` | Charts (`metrics.ts` defines every chart) | UI |
 | `src/components/landing/`, `crew/`, `rules/`, `problems/`, `ship/`, `alerts/` | Screens (landing page, detail view, Rules page, ship strip) | UI |
@@ -85,13 +85,13 @@ Restart `npm run dev` and the radiation tiles fill in.
 3. Add a line to `MASCOT_IMAGES` in `src/data/mascot.ts`.
 4. Use it in `mascotForStatus` (for example change the `orange` case).
 
-**Adjust the body overlays.** Everything that depends on positions in the anatomy images is in `src/components/body/bodyConfig.ts`: the organ shapes (brain, heart, lung, liver/stomach, intestines), the arm and leg areas, the clickable areas and a gap fix for the female image. Open the app with `?debug` (e.g. `http://localhost:5173/?debug#/F02/details`) to see all shapes outlined. The images (`male_body_anatomy.jpg`, `femal_body_anatomy.jpg` in the repo root) are used as they are, including the text printed inside them. Arms, legs and the whole-body outline follow the real body outline, which the app calculates from the image in the browser.
+**Swap the 3D body for a real model.** Export a `.glb` whose mesh names are `head`, `chest`, `abdomen`, `arms`, `legs` and `body`, and save it as `public/models/body.glb`. Then in `src/components/body/BodyScene.tsx`, replace `<StylizedBody …/>` with `<GltfBody …/>` (same props). **Only use a model whose licence allows it (CC0 / CC-BY) and record it here.** The current body is built from code primitives, so no licence is needed.
 
 ## Licences and credits
 
-* Anatomy images: team files in the repo root (used unchanged).
+* 3D body: built in code from three.js primitives (no external model).
 * Mascot "Dr. Biscuit": team artwork (`NASA mascot/`).
-* Libraries: React, Recharts, Zustand, framer-motion (all MIT).
+* Libraries: React, three.js, @react-three/fiber, @react-three/drei, Recharts, Zustand, framer-motion (all MIT).
 * Fonts: Space Grotesk and JetBrains Mono (Google Fonts, SIL Open Font License). They are loaded online; without internet the browser falls back to system fonts.
 
 ## What is real, simulated or a placeholder

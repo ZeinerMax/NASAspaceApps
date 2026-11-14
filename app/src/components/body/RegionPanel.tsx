@@ -7,12 +7,43 @@ import { REGIONS, regionById } from '../../data/regions';
 import { ruleById } from '../../data/rules';
 import { PROBLEMS } from '../../data/problems';
 import { symptomDef } from '../../data/symptoms';
-import { statusRank } from '../../engine/aggregate';
+import { statusRank, worst } from '../../engine/aggregate';
 import { StatusChip, STATUS_COLOR } from '../common';
 import ActionBox from '../alerts/ActionBox';
 import HowToModal from '../checkin/HowToModal';
 
 const shortValue = (r: RuleResult) => r.valueLabel.split(' · ')[0];
+
+// What is shown next to each region in the summary list: short label + key number, coloured by that rule's status.
+type Item = { label: string; ruleIds: string[]; text: (r: Map<string, RuleResult>, d: DayView) => string };
+const numVal = (r: Map<string, RuleResult>, id: string, f: (v: number) => string) => {
+  const v = r.get(id)?.value;
+  return typeof v === 'number' ? f(v) : '—';
+};
+const training: Item = { label: 'Training', ruleIds: ['CH-TRAINING'], text: (r) => (r.get('CH-TRAINING')?.value === 'rest' ? 'rest day' : numVal(r, 'CH-TRAINING', (v) => `${Math.round(v)}%`)) };
+const mass: Item = { label: 'Mass', ruleIds: ['CH-MASS'], text: (r) => numVal(r, 'CH-MASS', (v) => `${v > 0 ? '−' : '+'}${Math.abs(v).toFixed(1)}%`) };
+const SUMMARY: Record<RegionId, Item[]> = {
+  head: [
+    { label: 'Sleep', ruleIds: ['CH-SLEEP'], text: (r) => numVal(r, 'CH-SLEEP', (v) => `${v.toFixed(1)} h`) },
+    { label: 'Mood', ruleIds: ['CH-MOOD'], text: (r) => numVal(r, 'CH-MOOD', (v) => v.toFixed(1)) },
+  ],
+  chest: [
+    { label: 'BP', ruleIds: ['CH-SYS', 'CH-DIA'], text: (_r, d) => (d.entry.bp.sys == null ? '—' : `${d.entry.bp.sys}/${d.entry.bp.dia ?? '—'}`) },
+    { label: 'HR', ruleIds: ['CH-HR'], text: (_r, d) => (d.entry.hr.bpm == null ? '—' : String(d.entry.hr.bpm)) },
+    { label: 'SpO₂', ruleIds: ['INFO-SPO2'], text: (_r, d) => (d.entry.o2.spo2Pct == null ? '—' : `${d.entry.o2.spo2Pct}%`) },
+  ],
+  abdomen: [
+    { label: 'Food', ruleIds: ['CH-FOOD'], text: (r) => numVal(r, 'CH-FOOD', (v) => `${Math.round(v)}%`) },
+    { label: 'Water', ruleIds: ['CH-WATER'], text: (r) => numVal(r, 'CH-WATER', (v) => `${v.toFixed(1)} L`) },
+    { label: 'Glucose', ruleIds: ['CH-GLU'], text: (r) => numVal(r, 'CH-GLU', (v) => v.toFixed(1)) },
+  ],
+  arms: [training, mass],
+  legs: [training, mass],
+  body: [
+    { label: 'Temp', ruleIds: ['CH-TEMP'], text: (r) => numVal(r, 'CH-TEMP', (v) => `${v.toFixed(1)}°`) },
+    { label: 'Symptoms', ruleIds: ['CH-SYMPTOMS'], text: (_r, d) => (d.entry.symptoms.length ? String(d.entry.symptoms.length) : 'none') },
+  ],
+};
 
 function Row({ r, onHowTo }: { r: RuleResult; onHowTo: (id: string) => void }) {
   const rule = ruleById(r.ruleId);
@@ -38,33 +69,30 @@ export default function RegionPanel({ day, region, onSelect }: { day: DayView; r
 
   let content: React.ReactNode;
   if (!region) {
-    const alerts = day.results
-      .filter((r) => r.ruleId.startsWith('CH-') && (r.status === 'orange' || r.status === 'red'))
-      .sort((a, b) => statusRank(b.status) - statusRank(a.status));
     content = (
-      <>
-        <div className="section-title">Regions</div>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6 }}>
-          {REGIONS.map((reg) => (
-            <button key={reg.id} className="btn btn-sm" style={{ justifyContent: 'flex-start', borderRadius: 12 }} onClick={() => onSelect(reg.id)}>
-              <span className="dot" style={{ background: STATUS_COLOR[day.regions[reg.id]] }} /> {reg.label}
+      <div style={{ display: 'grid', gap: 8 }}>
+        {REGIONS.map((reg) => {
+          const st = day.regions[reg.id];
+          const bad = st === 'orange' || st === 'red';
+          return (
+            <button key={reg.id} className="region-row" style={bad ? { borderColor: `color-mix(in srgb, ${STATUS_COLOR[st]} 55%, transparent)` } : undefined} onClick={() => onSelect(reg.id)}>
+              <span className="region-name"><span className="dot" style={{ background: STATUS_COLOR[st] }} />{reg.label}</span>
+              <span className="region-info">
+                {SUMMARY[reg.id].map((it) => {
+                  const s = worst(it.ruleIds.map((id) => byId.get(id)?.status ?? 'grey'));
+                  return (
+                    <span key={it.label}>
+                      <span className="dim">{it.label} </span>
+                      <b className="mono" style={{ color: s === 'info' || s === 'grey' ? 'var(--text-dim)' : STATUS_COLOR[s] }}>{it.text(byId, day)}</b>
+                    </span>
+                  );
+                })}
+              </span>
+              {bad && <span className="region-flag" style={{ color: STATUS_COLOR[st] }}>{st === 'red' ? 'Act now' : 'Warning'}</span>}
             </button>
-          ))}
-        </div>
-        <div className="section-title" style={{ marginTop: 6 }}>Warnings ({alerts.length})</div>
-        {alerts.length === 0 && <p className="dim">None. All healthy.</p>}
-        <div style={{ display: 'grid', gap: 6 }}>
-          {alerts.map((r) => {
-            const target = ruleById(r.ruleId).regions[0];
-            return (
-              <button key={r.ruleId} className="btn" style={{ justifyContent: 'space-between', borderRadius: 12 }} onClick={() => target && onSelect(target)}>
-                <StatusChip status={r.status} label={ruleById(r.ruleId).label} />
-                <span className="mono dim" style={{ fontSize: 15 }}>{shortValue(r)}</span>
-              </button>
-            );
-          })}
-        </div>
-      </>
+          );
+        })}
+      </div>
     );
   } else {
     const reg = regionById(region);
