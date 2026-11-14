@@ -7,6 +7,13 @@ import { Modal, VerifyTag } from '../common';
 const TUTORIAL_VIDEO: Record<string, string> = {
   bp: 'https://raw.githubusercontent.com/ZeinerMax/NASAspaceApps/main/blood_presure.mp4',
   mass: 'https://raw.githubusercontent.com/ZeinerMax/NASAspaceApps/main/BodyMass.mp4',
+  temp: 'https://raw.githubusercontent.com/ZeinerMax/NASAspaceApps/main/BodyTemp.mp4',
+  food: 'https://raw.githubusercontent.com/ZeinerMax/NASAspaceApps/main/FoodInTake.mp4',
+  mood: 'https://raw.githubusercontent.com/ZeinerMax/NASAspaceApps/main/MoodScore.mp4',
+  spo2: 'https://raw.githubusercontent.com/ZeinerMax/NASAspaceApps/main/Oxygen.mp4',
+  sleep: 'https://raw.githubusercontent.com/ZeinerMax/NASAspaceApps/main/Sleep.mp4',
+  symptoms: 'https://raw.githubusercontent.com/ZeinerMax/NASAspaceApps/main/Symptoms.mp4',
+  training: 'https://raw.githubusercontent.com/ZeinerMax/NASAspaceApps/main/Training.mp4',
 };
 
 export default function HowToModal({ id, onClose }: { id: string; onClose: () => void }) {
