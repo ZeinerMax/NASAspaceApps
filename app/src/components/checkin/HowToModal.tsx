@@ -3,9 +3,10 @@ import { EXPLANATIONS } from '../../data/explanations';
 import { MASCOT_IMAGES } from '../../data/mascot';
 import { Modal, VerifyTag } from '../common';
 
-// The blood pressure demo is stored in the repository root (outside Vite's app/public directory).
+// Tutorial videos live in the repository root (outside Vite's app/public directory).
 const TUTORIAL_VIDEO: Record<string, string> = {
   bp: 'https://raw.githubusercontent.com/ZeinerMax/NASAspaceApps/main/blood_presure.mp4',
+  mass: 'https://raw.githubusercontent.com/ZeinerMax/NASAspaceApps/main/BodyMass.mp4',
 };
 
 export default function HowToModal({ id, onClose }: { id: string; onClose: () => void }) {
