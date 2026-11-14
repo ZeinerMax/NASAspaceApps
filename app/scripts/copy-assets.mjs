@@ -1,0 +1,33 @@
+// Copies the mascot images from "NASA mascot/" to public/mascot/ with clean names.
+// The originals are never changed. Add new images here (and in src/data/mascot.ts).
+import { copyFileSync, existsSync, mkdirSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const here = dirname(fileURLToPath(import.meta.url));
+const srcDir = join(here, '..', '..', 'NASA mascot');
+const outDir = join(here, '..', 'public', 'mascot');
+mkdirSync(outDir, { recursive: true });
+
+const map = {
+  'Dr._Biscuit.png': 'default.png',
+  'buscuit_good.jpg': 'good.jpg',
+  'Buscuit_scared.jpg': 'alarm.jpg', // Buscuit_schocked.jpg is byte-identical
+  'Buscuit_sick.jpg': 'sick.jpg',
+  'Buscuit_sleep.jpg': 'sleep.jpg',
+  'Buscuit_workout.jpg': 'workout.jpg',
+  'Buscuit_drink.jpg': 'drink.jpg',
+  'Buscuit_measure_heart.jpg': 'measure.jpg',
+};
+
+let n = 0;
+for (const [from, to] of Object.entries(map)) {
+  const src = join(srcDir, from);
+  if (!existsSync(src)) {
+    console.warn(`mascot: missing ${from}`);
+    continue;
+  }
+  copyFileSync(src, join(outDir, to));
+  n++;
+}
+console.log(`mascot: ${n} images copied`);
