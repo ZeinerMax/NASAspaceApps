@@ -49,16 +49,16 @@ function Row({ r, onHowTo }: { r: RuleResult; onHowTo: (id: string) => void }) {
   const rule = ruleById(r.ruleId);
   const bad = r.status === 'orange' || r.status === 'red';
   return (
-    <div style={{ padding: '8px 0', borderBottom: '1px dashed rgba(120,160,255,0.14)' }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+    <div className="details-metric" style={{ borderBottom: '1px dashed rgba(120,160,255,0.14)' }}>
+      <div className="details-metric-head">
         <span className="dot" style={{ background: STATUS_COLOR[r.status] }} />
-        <strong style={{ flex: 1 }}>
+        <strong>
           {rule.label}
           {rule.explanationId && <button className="help-btn" title="How to measure" aria-label={`How to measure ${rule.label}`} onClick={() => onHowTo(rule.explanationId!)}>?</button>}
         </strong>
-        <span className="mono" style={{ color: STATUS_COLOR[r.status] }}>{shortValue(r)}</span>
+        <span className="mono details-metric-value" style={{ color: STATUS_COLOR[r.status] }}>{shortValue(r)}</span>
       </div>
-      {bad && <div className="dim" style={{ fontSize: 15, marginLeft: 20 }}>{r.reason}</div>}
+      {bad && <div className="dim details-metric-reason">{r.reason}</div>}
     </div>
   );
 }
@@ -81,9 +81,9 @@ export default function RegionPanel({ day, region, onSelect }: { day: DayView; r
                 {SUMMARY[reg.id].map((it) => {
                   const s = worst(it.ruleIds.map((id) => byId.get(id)?.status ?? 'grey'));
                   return (
-                    <span key={it.label}>
-                      <span className="dim">{it.label} </span>
-                      <b className="mono" style={{ color: s === 'info' || s === 'grey' ? 'var(--text-dim)' : STATUS_COLOR[s] }}>{it.text(byId, day)}</b>
+                    <span className="summary-metric" key={it.label}>
+                      <span className="dim summary-metric-label">{it.label}</span>
+                      <b className="mono summary-metric-value" style={{ color: s === 'info' || s === 'grey' ? 'var(--text-dim)' : STATUS_COLOR[s] }}>{it.text(byId, day)}</b>
                     </span>
                   );
                 })}
