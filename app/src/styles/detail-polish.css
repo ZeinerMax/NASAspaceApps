@@ -1,0 +1,126 @@
+/* Keep the astronaut panel visually consistent with the landing card while making the detail copy easier to scan. */
+.details-grid {
+  grid-template-columns: minmax(340px, 430px) minmax(0, 560px);
+  align-items: stretch;
+}
+
+.details-body {
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  width: 100%;
+  height: clamp(420px, 62dvh, 640px);
+  min-height: 420px;
+  padding: 10px;
+  overflow: hidden;
+}
+
+.details-body canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.details-side {
+  max-height: clamp(420px, 62dvh, 640px);
+  padding: 18px;
+  line-height: 1.5;
+}
+
+.details-side .region-row {
+  grid-template-columns: minmax(96px, 126px) minmax(0, 1fr) auto;
+  gap: 12px;
+  padding: 11px 13px;
+  border-radius: 12px;
+  transition: background 150ms ease, border-color 150ms ease, transform 150ms ease;
+}
+
+.details-side .region-row:hover {
+  transform: translateY(-1px);
+}
+
+.details-side .region-info {
+  gap: 4px 14px;
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.details-side .region-flag {
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.details-metric {
+  padding: 11px 0 !important;
+}
+
+.details-metric-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.details-metric-head strong {
+  flex: 1;
+  min-width: 0;
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+.details-metric-value {
+  flex: none;
+  max-width: 48%;
+  text-align: right;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+.details-metric-reason {
+  margin: 5px 0 0 20px;
+  font-size: 14px !important;
+  line-height: 1.5;
+}
+
+.details-side .section-title {
+  margin-top: 4px;
+}
+
+@media (max-width: 900px) {
+  .details-grid {
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: stretch;
+  }
+
+  .details-body {
+    width: 100%;
+    max-width: none;
+    height: clamp(420px, 58dvh, 560px);
+  }
+
+  .details-side {
+    max-height: none;
+  }
+}
+
+@media (max-width: 560px) {
+  .details-side {
+    padding: 14px;
+  }
+
+  .details-side .region-row {
+    grid-template-columns: 1fr auto;
+  }
+
+  .details-side .region-info {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+
+  .details-side .region-flag {
+    grid-column: 2;
+    grid-row: 1;
+  }
+}

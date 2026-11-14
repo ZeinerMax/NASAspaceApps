@@ -18,7 +18,7 @@ function BodyScene({ sex, regionStatus, selected = null, onSelect, interactive =
       dpr={[1, 1.5]}
       gl={{ antialias: true, alpha: true }}
       onPointerMissed={() => onSelect?.(null)}
-      style={{ touchAction: 'none', pointerEvents: interactive ? 'auto' : 'none' }}
+      style={{ touchAction: 'none', pointerEvents: interactive ? 'auto' : 'none', width: '100%', height: '100%', display: 'block' }}
     >
       <ambientLight intensity={0.35} />
       <directionalLight position={[3, 5, 4]} intensity={0.8} />
