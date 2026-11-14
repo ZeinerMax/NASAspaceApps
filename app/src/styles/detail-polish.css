@@ -1,7 +1,12 @@
-/* Keep the astronaut panel visually consistent with the landing card while making the detail copy easier to scan. */
+/* Match the landing screen's generous astronaut card while keeping the detail copy beside it. */
 .details-grid {
-  grid-template-columns: minmax(340px, 430px) minmax(0, 560px);
+  width: min(1440px, 100%);
+  height: clamp(420px, calc(100dvh - 300px), 680px);
+  min-height: 420px;
+  margin-inline: auto;
+  grid-template-columns: minmax(380px, 0.9fr) minmax(0, 1.1fr);
   align-items: stretch;
+  gap: 20px;
 }
 
 .details-body {
@@ -9,10 +14,13 @@
   align-items: stretch;
   justify-content: center;
   width: 100%;
-  height: clamp(420px, 62dvh, 640px);
-  min-height: 420px;
-  padding: 10px;
+  height: 100%;
+  min-height: 0;
+  padding: 14px;
   overflow: hidden;
+  background:
+    radial-gradient(ellipse at 50% 42%, rgba(94, 231, 255, 0.08), transparent 58%),
+    var(--panel);
 }
 
 .details-body canvas {
@@ -22,15 +30,18 @@
 }
 
 .details-side {
-  max-height: clamp(420px, 62dvh, 640px);
-  padding: 18px;
-  line-height: 1.5;
+  height: 100%;
+  max-height: 100%;
+  min-height: 0;
+  padding: 22px;
+  line-height: 1.55;
+  scrollbar-gutter: stable;
 }
 
 .details-side .region-row {
   grid-template-columns: minmax(96px, 126px) minmax(0, 1fr) auto;
   gap: 12px;
-  padding: 11px 13px;
+  padding: 12px 14px;
   border-radius: 12px;
   transition: background 150ms ease, border-color 150ms ease, transform 150ms ease;
 }
@@ -41,7 +52,7 @@
 
 .details-side .region-info {
   gap: 4px 14px;
-  font-size: 14px;
+  font-size: 15px;
   line-height: 1.55;
 }
 
@@ -52,7 +63,7 @@
 }
 
 .details-metric {
-  padding: 11px 0 !important;
+  padding: 12px 0 !important;
 }
 
 .details-metric-head {
@@ -64,7 +75,7 @@
 .details-metric-head strong {
   flex: 1;
   min-width: 0;
-  font-size: 15px;
+  font-size: 16px;
   line-height: 1.4;
 }
 
@@ -72,7 +83,7 @@
   flex: none;
   max-width: 48%;
   text-align: right;
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 700;
   line-height: 1.4;
   overflow-wrap: anywhere;
@@ -81,15 +92,17 @@
 .details-metric-reason {
   margin: 5px 0 0 20px;
   font-size: 14px !important;
-  line-height: 1.5;
+  line-height: 1.55;
 }
 
 .details-side .section-title {
-  margin-top: 4px;
+  margin-top: 6px;
 }
 
 @media (max-width: 900px) {
   .details-grid {
+    height: auto;
+    min-height: 0;
     grid-template-columns: minmax(0, 1fr);
     justify-items: stretch;
   }
@@ -101,11 +114,18 @@
   }
 
   .details-side {
+    height: auto;
     max-height: none;
+    padding: 18px;
   }
 }
 
 @media (max-width: 560px) {
+  .details-body {
+    height: 420px;
+    padding: 8px;
+  }
+
   .details-side {
     padding: 14px;
   }
