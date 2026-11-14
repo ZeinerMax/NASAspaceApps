@@ -12,7 +12,7 @@ import RulesPage from './components/rules/RulesPage';
 import CheckInWizard from './components/checkin/CheckInWizard';
 import ScanResults from './components/alerts/ScanResults';
 
-const TAB_IDS: Tab[] = ['details', 'trends', 'problems'];
+const TAB_IDS: Tab[] = ['details', 'trends', 'problems', 'tutorials'];
 
 export default function App() {
   const selected = useAppStore((s) => s.selectedCrew);
@@ -24,7 +24,7 @@ export default function App() {
   const mascotOpen = useAppStore((s) => s.mascotOpen);
   const landing = !selected && !showRules;
 
-  // Deep links (handy for presenting): #/ landing · #/rules · #/F02/details · #/F02/trends · #/F02/problems
+  // Deep links (handy for presenting): #/ landing · #/rules · #/F02/details · #/F02/trends · #/F02/problems · #/F02/tutorials
   useEffect(() => {
     const [a, b] = location.hash.replace(/^#\/?/, '').split('/');
     const st = useAppStore.getState();
@@ -40,7 +40,7 @@ export default function App() {
     if (location.hash !== h) history.replaceState(null, '', h + location.search);
   }, [selected, tab, showRules]);
 
-  // The landing page must fit in one window (no page scroll): lock the page height only there.
+  // The landing page must fit in one window without scrolling.
   useEffect(() => {
     document.getElementById('root')?.classList.toggle('fit', landing);
   }, [landing]);
