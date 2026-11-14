@@ -1,4 +1,4 @@
-// One crew member: header with day slider, tabs (Details | Trends | Problems), mascot.
+// One crew member: header with day slider, tabs (Details | Trends | Problems | Tutorials), mascot.
 // No ship information here (it lives on the landing page).
 import { memo, useCallback, useDeferredValue, useState } from 'react';
 import { motion } from 'framer-motion';
@@ -14,10 +14,14 @@ import HazardView from '../body/HazardView';
 import Mascot from '../mascot/Mascot';
 import TrendGrid from '../trends/TrendGrid';
 import ProblemsTab from '../problems/ProblemsTab';
+import TutorialsTab from './TutorialsTab';
 import DaySlider from './DaySlider';
 
 const TABS: { id: Tab; label: string }[] = [
-  { id: 'details', label: 'Details' }, { id: 'trends', label: 'Trends' }, { id: 'problems', label: 'Problems' },
+  { id: 'details', label: 'Details' },
+  { id: 'trends', label: 'Trends' },
+  { id: 'problems', label: 'Problems' },
+  { id: 'tutorials', label: 'Tutorials' },
 ];
 
 /**
@@ -26,7 +30,7 @@ const TABS: { id: Tab; label: string }[] = [
  */
 const TabBar = memo(function TabBar({ tab, onTab }: { tab: Tab; onTab: (t: Tab) => void }) {
   return (
-    <div className="tabs" role="tablist">
+    <div className="tabs" role="tablist" aria-label="Crew details">
       {TABS.map((t) => (
         <button key={t.id} className="tab" role="tab" aria-selected={tab === t.id} onClick={() => onTab(t.id)}>
           {tab === t.id && <motion.span layoutId="tab-bg" className="tab-bg" transition={{ type: 'spring', stiffness: 420, damping: 34 }} />}
@@ -72,7 +76,7 @@ export default function CrewDetail({ crewId }: { crewId: CrewId }) {
         </div>
         {/* fixed-width slot: the chip text changes width with the status and would otherwise push the slider sideways */}
         <div className="status-slot"><StatusChip status={day.overall} /></div>
-        {tab !== 'trends' && <DaySlider min={first} max={last} value={day.entry.flightDay} onCommit={commitDay} />}
+        {tab !== 'trends' && tab !== 'tutorials' && <DaySlider min={first} max={last} value={day.entry.flightDay} onCommit={commitDay} />}
         <div className="spacer" />
         <button className="btn btn-primary" disabled={doneToday} onClick={() => openCheckIn(crewId)}>
           {doneToday ? '✓ Done today' : '+ Check-in'}
@@ -97,6 +101,7 @@ export default function CrewDetail({ crewId }: { crewId: CrewId }) {
       )}
       {tab === 'trends' && <TrendGrid crew={crew} timeline={timeline} />}
       {tab === 'problems' && <ProblemsTab day={day} />}
+      {tab === 'tutorials' && <TutorialsTab />}
 
       <CrewMascot crewId={crew.id} overall={mascotDay.overall} sick={sick} />
     </>
