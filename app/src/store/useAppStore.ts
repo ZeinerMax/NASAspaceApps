@@ -8,7 +8,7 @@ import { initialReading, nextReading, SHIP_HISTORY_LENGTH } from '../sim/shipFee
 export const STORAGE_KEY = 'astroHealth.v1';
 const MASCOT_KEY = 'astroHealth.mascotOpen';
 
-export type Tab = 'details' | 'trends' | 'problems';
+export type Tab = 'details' | 'trends' | 'problems' | 'tutorials';
 
 const readMascotOpen = () => {
   try { return sessionStorage.getItem(MASCOT_KEY) !== '0'; } catch { return true; }
