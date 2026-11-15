@@ -6,7 +6,7 @@ import type { CrewId, RegionId } from '../../types';
 import { crewById } from '../../data/crew';
 import { mascotForStatus } from '../../data/mascot';
 import { todayIso, useAppStore, type Tab } from '../../store/useAppStore';
-import { useDayView, useHazards, useShipStatuses } from '../../store/useCrewView';
+import { radiationFor, useDayView, useHazards, useShipStatuses } from '../../store/useCrewView';
 import { StatusChip } from '../common';
 import BodyScene from '../body/BodyScene';
 import RegionPanel from '../body/RegionPanel';
@@ -56,6 +56,7 @@ export default function CrewDetail({ crewId }: { crewId: CrewId }) {
   const doneToday = useAppStore((s) => s.lastCheckInDate[crewId] === todayIso());
   const shipStatuses = useShipStatuses(day.entry.flightDay);
   const hazards = useHazards(day, shipStatuses);
+  const radiation = radiationFor(day.entry.flightDay);
   const [region, setRegion] = useState<RegionId | null>(null);
   const [hazardMode, setHazardMode] = useState(false);
 
@@ -95,7 +96,7 @@ export default function CrewDetail({ crewId }: { crewId: CrewId }) {
               <button className="btn btn-sm" aria-pressed={!hazardMode} onClick={() => setHazardMode(false)} style={!hazardMode ? { borderColor: 'var(--accent)' } : undefined}>Body</button>
               <button className="btn btn-sm" aria-pressed={hazardMode} onClick={() => setHazardMode(true)} style={hazardMode ? { borderColor: 'var(--accent)' } : undefined}>Hazards</button>
             </div>
-            {hazardMode ? <HazardView statuses={hazards} /> : <RegionPanel day={day} region={region} onSelect={setRegion} />}
+            {hazardMode ? <HazardView statuses={hazards} radiation={radiation} /> : <RegionPanel day={day} region={region} onSelect={setRegion} />}
           </div>
         </div>
       )}

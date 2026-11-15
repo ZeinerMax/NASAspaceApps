@@ -46,7 +46,10 @@ export function hazardStatuses(results: Pick<RuleResult, 'ruleId' | 'status'>[])
   const byId = new Map(results.map((r) => [r.ruleId, r]));
   const out = {} as Record<HazardId, Status>;
   for (const h of HAZARDS) {
-    out[h.id] = h.ruleIds.length ? worst(h.ruleIds.map((id) => byId.get(id)?.status ?? 'grey')) : 'info';
+    const statuses = h.ruleIds.map((id) => byId.get(id)?.status ?? 'grey');
+    // An unreported solar-event measurement must not mask known mission-dose status as "No data".
+    const assessable = h.id === 'radiation' ? statuses.filter((status) => status !== 'grey' && status !== 'info') : statuses;
+    out[h.id] = worst(assessable.length ? assessable : statuses);
   }
   return out;
 }
