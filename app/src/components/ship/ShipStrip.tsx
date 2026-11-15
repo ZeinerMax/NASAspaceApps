@@ -10,11 +10,17 @@ const SHORT: Record<string, string> = {
   'SH-DILUENT': 'Diluent', 'SH-RAD-CAREER': 'Radiation', 'SH-RAD-SPE': 'Solar event', 'SH-RAD-RATE': 'Dose rate',
 };
 
-export default function ShipStrip({ results, highlight = [], onOpen }: { results: RuleResult[]; highlight?: string[]; onOpen?: () => void }) {
+export default function ShipStrip({ results, highlight = [], onOpen, showSolarEvents = true }: {
+  results: RuleResult[];
+  highlight?: string[];
+  onOpen?: () => void;
+  showSolarEvents?: boolean;
+}) {
+  const visibleResults = showSolarEvents ? results : results.filter((r) => r.ruleId !== 'SH-RAD-SPE');
   return (
     <button className="ship-strip" onClick={onOpen} aria-label="Open ship details">
       <span className="ship-title"><span className="section-title">Ship</span><SimTag /></span>
-      {results.map((r) => {
+      {visibleResults.map((r) => {
         const hl = highlight.includes(r.ruleId);
         const noData = r.status === 'grey';
         return (
