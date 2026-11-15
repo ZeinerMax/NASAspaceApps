@@ -23,34 +23,37 @@ export default function App() {
   const tickShip = useAppStore((s) => s.tickShip);
   const mascotOpen = useAppStore((s) => s.mascotOpen);
   const landing = !selected && !showRules;
+  const detailsView = Boolean(selected && !showRules && tab === 'details');
+  const scrollableView = Boolean(selected && !showRules && tab !== 'details');
 
-  // Deep links (handy for presenting): #/ landing · #/rules · #/F02/details · #/F02/trends · #/F02/problems · #/F02/tutorials
+  useEffect(() => {
+    const root = document.getElementById('root');
+    root?.classList.toggle('fit', landing || detailsView);
+    root?.classList.toggle('scrollable-page', scrollableView);
+    return () => root?.classList.remove('fit', 'scrollable-page');
+  }, [landing, detailsView, scrollableView]);
+
+  // Deep links (handy for presenting): #/ landing · #/rules · #/F01/details · #/F01/trends · #/F01/problems · #/F01/tutorials
   useEffect(() => {
     const [a, b] = location.hash.replace(/^#\/?/, '').split('/');
     const st = useAppStore.getState();
     if (a === 'rules') st.setRules(true);
     else if (CREW.some((c) => c.id === a)) {
       st.selectCrew(a as CrewId);
-      const t = b === 'body' ? 'details' : b; // old links
+      const t = b === 'body' ? 'details' : b;
       if (t && TAB_IDS.includes(t as Tab)) st.setTab(t as Tab);
     }
   }, []);
+
   useEffect(() => {
     const h = showRules ? '#/rules' : selected ? `#/${selected}/${tab}` : '#/';
     if (location.hash !== h) history.replaceState(null, '', h + location.search);
   }, [selected, tab, showRules]);
 
-  // The landing page must fit in one window without scrolling.
-  useEffect(() => {
-    document.getElementById('root')?.classList.toggle('fit', landing);
-  }, [landing]);
-
-  // lets the CSS leave room for the open mascot
   useEffect(() => {
     document.getElementById('root')?.classList.toggle('mascot-open', mascotOpen);
   }, [mascotOpen]);
 
-  // Simulated ship feed: runs for the whole session.
   useEffect(() => {
     const id = setInterval(tickShip, SHIP_TICK_MS);
     return () => clearInterval(id);
@@ -59,7 +62,7 @@ export default function App() {
   return (
     <>
       <Header />
-      <main className={`app-main ${landing ? 'landing-main' : ''}`}>
+      <main className={`app-main ${landing ? 'landing-main' : ''} ${detailsView ? 'detail-main' : ''}`}>
         {showRules ? <RulesPage /> : selected ? <CrewDetail crewId={selected} /> : <Landing />}
       </main>
       <DisclaimerBar />
