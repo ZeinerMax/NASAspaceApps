@@ -1,0 +1,24 @@
+/* Mascot images: soften the image tile and blend the white-backed artwork into the space UI. */
+.tutorial-mascot-frame {
+  display: grid;
+  place-items: center;
+  width: 54px;
+  height: 54px;
+  flex: none;
+  overflow: hidden;
+  border: 1px solid rgba(94, 231, 255, 0.28);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(94, 231, 255, 0.12), rgba(139, 123, 255, 0.09) 68%, transparent);
+  box-shadow: 0 0 18px rgba(94, 231, 255, 0.1);
+}
+
+.tutorial-mascot {
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  object-fit: cover;
+  mix-blend-mode: darken;
+}

@@ -32,7 +32,11 @@ export default function HowToModal({ id, onClose }: { id: string; onClose: () =>
   return (
     <Modal
       title={<>How to measure: {ex.title}</>}
-      icon={<img src={MASCOT_IMAGES[ex.mascot]} alt="" style={{ width: 52, height: 62, objectFit: 'contain', background: '#f6f8ff', borderRadius: 10, padding: 3 }} />}
+      icon={(
+        <span style={{ display: 'grid', placeItems: 'center', width: 52, height: 52, flex: 'none', overflow: 'hidden', borderRadius: '50%', border: '1px solid rgba(94, 231, 255, 0.32)', background: 'radial-gradient(circle, rgba(94, 231, 255, 0.13), rgba(139, 123, 255, 0.1) 68%, transparent)', boxShadow: '0 0 18px rgba(94, 231, 255, 0.12)' }}>
+          <img src={MASCOT_IMAGES[ex.mascot]} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%', mixBlendMode: 'darken' }} />
+        </span>
+      )}
       onClose={onClose}
       wide
       footer={<><VerifyTag /><span className="dim" style={{ fontSize: 15 }}>Draft written for this prototype. Check against the mission's medical procedures.</span></>}

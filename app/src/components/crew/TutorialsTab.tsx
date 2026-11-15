@@ -53,7 +53,9 @@ export default function TutorialsTab() {
             <article className="panel tutorial-card" key={tutorial.id}>
               <div className="tutorial-card-topline">
                 <span className="tutorial-number">{String(index + 1).padStart(2, '0')}</span>
-                <img className="tutorial-mascot" src={MASCOT_IMAGES[tutorial.mascot]} alt="" />
+                <span className="tutorial-mascot-frame">
+                  <img className="tutorial-mascot" src={MASCOT_IMAGES[tutorial.mascot]} alt="" />
+                </span>
               </div>
               <div className="tutorial-card-content">
                 <h3>{tutorial.title}</h3>
