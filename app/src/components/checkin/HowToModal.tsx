@@ -32,11 +32,7 @@ export default function HowToModal({ id, onClose }: { id: string; onClose: () =>
   return (
     <Modal
       title={<>How to measure: {ex.title}</>}
-      icon={(
-        <span className="tutorial-mascot-frame tutorial-modal-mascot">
-          <img className="tutorial-mascot" src={MASCOT_IMAGES[ex.mascot]} alt="" />
-        </span>
-      )}
+      icon={<img src={MASCOT_IMAGES[ex.mascot]} alt="" style={{ width: 52, height: 62, objectFit: 'contain', background: '#f6f8ff', borderRadius: 10, padding: 3 }} />}
       onClose={onClose}
       wide
       footer={<><VerifyTag /><span className="dim" style={{ fontSize: 15 }}>Draft written for this prototype. Check against the mission's medical procedures.</span></>}
