@@ -17,7 +17,7 @@ export function evaluateShip(s: ShipReading | null, rad: RadiationDay | null): R
   if (s) {
     const co2 = `${fmt(s.co2mmHg, 2, 'mmHg')} · 7-day ${fmt(s.co2Avg7d, 2)}`;
     if (s.co2mmHg >= CO2_EMERGENCY_MMHG) out.push(r('SH-CO2', 'red', s.co2mmHg, co2, `At or above the emergency limit (${CO2_EMERGENCY_MMHG} mmHg, placeholder).`));
-    else if (s.co2mmHg > 3.0 || s.co2Avg7d > 2.5) out.push(r('SH-CO2', 'orange', s.co2mmHg, co2, s.co2mmHg > 3.0 ? 'Above the 3.0 mmHg 1-hour requirement.' : '7-day average above 2.5 mmHg (headache risk).'));
+    else if (s.co2mmHg > 3.0 || s.co2Avg7d > 2.5) out.push(r('SH-CO2', 'orange', s.co2mmHg, co2, s.co2mmHg > 3.0 ? 'Above the 3.0 mmHg 1-hour requirement.' : '7-day average above 2.5 mmHg (headache risk).' ));
     else out.push(r('SH-CO2', 'green', s.co2mmHg, co2, '1-hour average ≤3.0 and 7-day average ≤2.5 mmHg.'));
 
     const t = s.cabinTempC;
@@ -45,8 +45,8 @@ export function evaluateShip(s: ShipReading | null, rad: RadiationDay | null): R
     out.push(d < 30 ? r('SH-DILUENT', 'red', d, fmt(d, 0, '%'), 'Below 30 %.') : r('SH-DILUENT', 'green', d, fmt(d, 0, '%'), 'At least 30 %.'));
   }
 
-  // Radiation: ship-wide data added by the team later (radiation.json). Until then: grey "No data yet".
-  const none = (id: string) => r(id, 'grey', null, 'No data yet', 'Radiation data has not been added yet (radiation.json).');
+  // Radiation is ship-summary data from radiation.json or per-crew radiace.json.
+  const none = (id: string) => r(id, 'grey', null, 'No data yet', 'No value was provided for this radiation measurement.');
   if (!rad) {
     out.push(none('SH-RAD-CAREER'), none('SH-RAD-SPE'), none('SH-RAD-RATE'));
     return out;

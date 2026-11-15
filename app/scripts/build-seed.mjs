@@ -19,7 +19,7 @@ function readJson(file, { repairTruncatedArray = false } = {}) {
     return JSON.parse(text);
   } catch (err) {
     if (!repairTruncatedArray) throw err;
-    // Known problem: oxygen_saturation.json ends with "…}," and no closing bracket.
+    // Known problem: oxygen_saturation.json ends with a trailing comma and no closing bracket.
     const repaired = text.trimEnd().replace(/,\s*$/, '') + '\n]';
     const data = JSON.parse(repaired);
     report.fixes.push({
@@ -115,7 +115,7 @@ for (const base of sources.bp) {
       type: tr?.training_type ?? 'none',
       minutes: num(tr?.duration_min),
       completed: typeof tr?.completed === 'boolean' ? tr.completed : null,
-      restDay: false, // decided by the engine (approved rest day = every 7th flight day)
+      restDay: false,
     },
     bp: { sys: num(base.sys), dia: num(base.dia), map: num(base.map) },
     hr: { bpm: num(hr?.hr_bpm), hrvMs: num(hr?.hrv_ms) },
@@ -127,10 +127,44 @@ for (const base of sources.bp) {
 }
 entries.sort((a, b) => a.crewId.localeCompare(b.crewId) || a.flightDay - b.flightDay);
 
-// Optional ship-wide radiation data, added later by the team (PLAN.md §5.2).
+// Radiation input supports the existing ship-wide radiation.json format and the team's per-crew radiace.json.
+// radiace.json provides cumulative mission dose per subject; use the highest crew dose for each day in the ship summary.
 let radiation = [];
-if (existsSync(join(repoRoot, 'radiation.json'))) {
-  radiation = readJson('radiation.json').map((r) => ({
+const radiationFile = existsSync(join(repoRoot, 'radiation.json'))
+  ? 'radiation.json'
+  : existsSync(join(repoRoot, 'radiace.json'))
+    ? 'radiace.json'
+    : null;
+
+if (radiationFile === 'radiace.json') {
+  const rows = readJson(radiationFile);
+  const byDay = new Map();
+  for (const row of rows) {
+    const flightDay = flightDayOf(row.day);
+    const dose = num(row.radiation_msv);
+    if (!Number.isFinite(flightDay)) {
+      report.warnings.push(`radiace.json: invalid flight day in record for ${row.subject_id ?? 'unknown subject'}`);
+      continue;
+    }
+    const current = byDay.get(flightDay);
+    if (!current || (dose != null && (current.missionDoseMSv == null || dose > current.missionDoseMSv))) {
+      byDay.set(flightDay, {
+        flightDay,
+        environment: row.environment ?? null,
+        doseRateMSvDay: null,
+        missionDoseMSv: dose,
+        speDoseMSv: null,
+      });
+    }
+  }
+  radiation = [...byDay.values()].sort((a, b) => a.flightDay - b.flightDay);
+  report.fixes.push({
+    file: radiationFile,
+    fix: 'Converted per-crew radiation_msv records to ship-summary radiation days.',
+    effect: `Used the highest available crew mission dose for each of ${radiation.length} flight days; dose rate and solar-event dose remain null because radiace.json does not provide them.`,
+  });
+} else if (radiationFile) {
+  radiation = readJson(radiationFile).map((r) => ({
     flightDay: flightDayOf(r.day),
     environment: r.environment ?? null,
     doseRateMSvDay: num(r.dose_rate_msv_day),
@@ -139,7 +173,7 @@ if (existsSync(join(repoRoot, 'radiation.json'))) {
   }));
   radiation.sort((a, b) => a.flightDay - b.flightDay);
 } else {
-  report.warnings.push('radiation.json not found in repo root: radiation tiles will show "No data yet".');
+  report.warnings.push('Neither radiation.json nor radiace.json was found: radiation tiles will show "No data yet".');
 }
 
 const seed = { entries, radiation };

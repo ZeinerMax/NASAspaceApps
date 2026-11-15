@@ -1,5 +1,5 @@
 // Compact ship strip (landing page): CO₂, cabin air and radiation in ONE row. Cabin values are SIMULATED;
-// radiation comes from radiation.json (ship-wide) and shows "—" until the team adds it.
+// radiation is loaded from radiation.json or the team's per-crew radiace.json.
 import { motion } from 'framer-motion';
 import type { RuleResult } from '../../types';
 import { ruleById } from '../../data/rules';
