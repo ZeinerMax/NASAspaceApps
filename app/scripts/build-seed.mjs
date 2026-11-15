@@ -128,7 +128,6 @@ for (const base of sources.bp) {
 entries.sort((a, b) => a.crewId.localeCompare(b.crewId) || a.flightDay - b.flightDay);
 
 // Radiation input supports the existing ship-wide radiation.json format and the team's per-crew radiace.json.
-// radiace.json provides cumulative mission dose per subject; use the highest crew dose for each day in the ship summary.
 let radiation = [];
 const radiationFile = existsSync(join(repoRoot, 'radiation.json'))
   ? 'radiation.json'
@@ -138,30 +137,63 @@ const radiationFile = existsSync(join(repoRoot, 'radiation.json'))
 
 if (radiationFile === 'radiace.json') {
   const rows = readJson(radiationFile);
-  const byDay = new Map();
+  const bySubject = new Map();
   for (const row of rows) {
-    const flightDay = flightDayOf(row.day);
-    const dose = num(row.radiation_msv);
-    if (!Number.isFinite(flightDay)) {
-      report.warnings.push(`radiace.json: invalid flight day in record for ${row.subject_id ?? 'unknown subject'}`);
-      continue;
-    }
-    const current = byDay.get(flightDay);
-    if (!current || (dose != null && (current.missionDoseMSv == null || dose > current.missionDoseMSv))) {
-      byDay.set(flightDay, {
+    const subjectRows = bySubject.get(row.subject_id) ?? [];
+    subjectRows.push(row);
+    bySubject.set(row.subject_id, subjectRows);
+  }
+
+  // radiation_msv is cumulative mission dose. Estimate daily dose rate from consecutive cumulative readings;
+  // the first flight day's cumulative value is its day-one dose. Do not invent SPE dose: it is not in this file.
+  const byDay = new Map();
+  for (const [subjectId, subjectRows] of bySubject) {
+    subjectRows.sort((a, b) => flightDayOf(a.day) - flightDayOf(b.day));
+    let previousDose = null;
+    let previousDay = null;
+    for (const row of subjectRows) {
+      const flightDay = flightDayOf(row.day);
+      const cumulativeDose = num(row.radiation_msv);
+      if (!Number.isFinite(flightDay)) {
+        report.warnings.push(`radiace.json: invalid flight day in record for ${subjectId}`);
+        continue;
+      }
+      const dailyDose = cumulativeDose == null
+        ? null
+        : previousDay === flightDay - 1 && previousDose != null
+          ? cumulativeDose - previousDose
+          : flightDay === 1
+            ? cumulativeDose
+            : null;
+      const day = byDay.get(flightDay) ?? {
         flightDay,
         environment: row.environment ?? null,
-        doseRateMSvDay: null,
-        missionDoseMSv: dose,
+        doseRateValues: [],
+        missionDoseMSv: null,
         speDoseMSv: null,
-      });
+      };
+      if (cumulativeDose != null && (day.missionDoseMSv == null || cumulativeDose > day.missionDoseMSv)) {
+        day.missionDoseMSv = cumulativeDose;
+      }
+      if (dailyDose != null && dailyDose >= 0) day.doseRateValues.push(dailyDose);
+      byDay.set(flightDay, day);
+      previousDose = cumulativeDose;
+      previousDay = flightDay;
     }
   }
-  radiation = [...byDay.values()].sort((a, b) => a.flightDay - b.flightDay);
+
+  radiation = [...byDay.values()]
+    .map(({ doseRateValues, ...day }) => ({
+      ...day,
+      doseRateMSvDay: doseRateValues.length
+        ? doseRateValues.reduce((sum, value) => sum + value, 0) / doseRateValues.length
+        : null,
+    }))
+    .sort((a, b) => a.flightDay - b.flightDay);
   report.fixes.push({
     file: radiationFile,
-    fix: 'Converted per-crew radiation_msv records to ship-summary radiation days.',
-    effect: `Used the highest available crew mission dose for each of ${radiation.length} flight days; dose rate and solar-event dose remain null because radiace.json does not provide them.`,
+    fix: 'Converted per-crew cumulative radiation_msv records to ship-summary radiation days and derived daily dose rate from consecutive readings.',
+    effect: `Aggregated mission dose and derived dose rate for ${radiation.length} flight days. Solar particle event dose is not present in the source and remains explicitly unreported.`,
   });
 } else if (radiationFile) {
   radiation = readJson(radiationFile).map((r) => ({
