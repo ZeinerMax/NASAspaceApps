@@ -1,8 +1,8 @@
 /* ---------- crew detail: match the landing card's scale and visual language ---------- */
 .details-grid {
   width: min(1440px, 100%);
-  height: clamp(420px, calc(100dvh - 260px), 720px);
-  min-height: 420px;
+  height: clamp(0px, calc(100dvh - 260px), 720px);
+  min-height: 0;
   margin-inline: auto;
   grid-template-columns: minmax(340px, 0.9fr) minmax(0, 1.1fr);
   align-items: stretch;
@@ -16,7 +16,7 @@
   width: 100%;
   height: 100%;
   min-height: 0;
-  padding: clamp(12px, 1.6vw, 20px);
+  padding: clamp(10px, 1.4vw, 18px);
   overflow: hidden;
   background:
     radial-gradient(ellipse at 50% 42%, rgba(94, 231, 255, 0.12), transparent 58%),
@@ -25,18 +25,15 @@
   box-shadow: inset 0 0 48px rgba(94, 231, 255, 0.035);
 }
 
-.details-body canvas {
-  display: block;
-  width: 100% !important;
-  height: 100% !important;
-}
+.details-body canvas { display: block; width: 100% !important; height: 100% !important; }
 
 .details-side {
   height: 100%;
   max-height: 100%;
   min-height: 0;
-  padding: clamp(16px, 2vw, 24px);
-  line-height: 1.55;
+  padding: clamp(14px, 1.6vw, 22px);
+  line-height: 1.5;
+  overflow: auto;
   scrollbar-gutter: stable;
   border-color: rgba(120, 160, 255, 0.2);
   background:
@@ -52,245 +49,129 @@
   background: linear-gradient(var(--panel-solid) 78%, transparent);
 }
 
-.details-side > div:first-child .btn {
-  min-width: 90px;
-  justify-content: center;
-  border-radius: 999px;
-}
-
+.details-side > div:first-child .btn { min-width: 90px; justify-content: center; border-radius: 999px; }
 .details-side .region-row {
   grid-template-columns: minmax(96px, 126px) minmax(0, 1fr) auto;
   gap: 12px;
-  padding: 12px 14px;
+  padding: 11px 13px;
   border-radius: 12px;
   background: rgba(255, 255, 255, 0.035);
   transition: background 150ms ease, border-color 150ms ease, transform 150ms ease;
 }
-
 .details-side .region-row:hover {
   transform: translateY(-1px);
   border-color: rgba(94, 231, 255, 0.3);
   background: rgba(94, 231, 255, 0.055);
 }
+.details-side .region-info { gap: 4px 12px; font-size: 14px; line-height: 1.5; }
+.details-side .region-flag { font-size: 12px; letter-spacing: 0.04em; text-transform: uppercase; }
+.details-metric { padding: 10px 0 !important; }
+.details-metric-head { display: flex; align-items: flex-start; gap: 10px; }
+.details-metric-head strong { flex: 1; min-width: 0; font-size: 15px; line-height: 1.4; }
+.details-metric-value { flex: none; max-width: 48%; text-align: right; font-size: 14px; font-weight: 700; line-height: 1.4; overflow-wrap: anywhere; }
+.details-metric-reason { margin: 5px 0 0 20px; font-size: 13px !important; line-height: 1.45; }
+.details-side .section-title { margin-top: 5px; }
 
-.details-side .region-info {
-  gap: 4px 14px;
-  font-size: 15px;
-  line-height: 1.55;
+/* Landing and crew Details use a fixed viewport shell; only the right-hand data panel scrolls when necessary. */
+#root.fit {
+  height: 100dvh;
+  min-height: 0;
+  overflow: hidden;
 }
-
-.details-side .region-flag {
-  font-size: 12px;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-
-.details-metric {
-  padding: 12px 0 !important;
-}
-
-.details-metric-head {
-  display: flex;
-  align-items: flex-start;
+#root.fit .detail-main {
+  flex: 1 1 0;
+  height: 0;
+  min-height: 0;
+  overflow: hidden;
+  padding: 10px 24px 8px;
   gap: 10px;
 }
-
-.details-metric-head strong {
-  flex: 1;
-  min-width: 0;
-  font-size: 16px;
-  line-height: 1.4;
-}
-
-.details-metric-value {
-  flex: none;
-  max-width: 48%;
-  text-align: right;
-  font-size: 15px;
-  font-weight: 700;
-  line-height: 1.4;
-  overflow-wrap: anywhere;
-}
-
-.details-metric-reason {
-  margin: 5px 0 0 20px;
-  font-size: 14px !important;
-  line-height: 1.55;
-}
-
-.details-side .section-title {
-  margin-top: 6px;
-}
+#root.fit .detail-main > .detail-head { flex: none; }
+#root.fit .detail-main > .tabs { flex: none; }
+#root.fit .detail-main .details-grid { flex: 1 1 0; height: auto; min-height: 0; }
+#root.fit .detail-main .details-body { min-height: 0; }
 
 @media (max-width: 1000px) {
-  .details-grid {
+  #root.fit .detail-main { overflow: auto; }
+  #root.fit .detail-main .details-grid {
+    flex: none;
     height: auto;
     min-height: 0;
     grid-template-columns: minmax(0, 1fr);
-    justify-items: stretch;
   }
-
-  .details-body {
-    width: 100%;
-    max-width: none;
-    height: clamp(420px, 58dvh, 560px);
-  }
-
-  .details-side {
-    height: auto;
-    max-height: min(72dvh, 720px);
-    padding: 18px;
-  }
+  #root.fit .detail-main .details-body { height: clamp(340px, 52dvh, 500px); }
+  #root.fit .detail-main .details-side { height: auto; max-height: 65dvh; }
 }
 
-@media (max-width: 560px) {
-  .details-body {
-    height: 420px;
-    padding: 8px;
-  }
+@media (max-height: 760px) and (min-width: 1001px) {
+  #root.fit .header { padding-top: 8px; padding-bottom: 8px; }
+  #root.fit .detail-main { padding-top: 6px; padding-bottom: 6px; }
+  #root.fit .detail-main .details-grid { gap: 12px; }
+  #root.fit .detail-main .details-body { padding: 8px; }
+  #root.fit .detail-main .details-side { padding: 12px; }
+  #root.fit .disclaimer { padding-top: 5px; padding-bottom: 5px; }
+}
 
-  .details-side {
-    max-height: 70dvh;
-    padding: 14px;
-  }
-
-  .details-side .region-row {
-    grid-template-columns: 1fr auto;
-  }
-
-  .details-side .region-info {
-    grid-column: 1 / -1;
-    grid-row: 2;
-  }
-
-  .details-side .region-flag {
-    grid-column: 2;
-    grid-row: 1;
-  }
+/* Long tabs scroll normally; keep the starfield/background fixed for the full document. */
+html, body, #root { min-height: 100%; }
+body { background-attachment: fixed; }
+#root.scrollable-page {
+  min-height: 100dvh;
+  height: auto;
+  overflow: visible;
+  background: transparent;
+}
+#root.scrollable-page .app-main:not(.landing-main) {
+  flex: 1 0 auto;
+  min-height: calc(100dvh - 150px);
 }
 
 /* ---------- tutorials library ---------- */
-.tutorials-page {
-  width: min(1440px, 100%);
-  margin: 0 auto;
-  padding-bottom: 90px;
-}
-
+.tutorials-page { width: min(1440px, 100%); margin: 0 auto; padding-bottom: 90px; }
 .tutorials-heading {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  gap: 24px;
-  margin-bottom: 16px;
-  padding: clamp(16px, 2.2vw, 24px);
-  background:
-    radial-gradient(ellipse at 0% 0%, rgba(94, 231, 255, 0.075), transparent 54%),
-    var(--panel);
+  display: flex; justify-content: space-between; align-items: flex-end; gap: 24px;
+  margin-bottom: 16px; padding: clamp(16px, 2.2vw, 24px);
+  background: radial-gradient(ellipse at 0% 0%, rgba(94, 231, 255, 0.075), transparent 54%), var(--panel);
 }
-
 .tutorials-heading-copy { display: grid; gap: 5px; }
 .tutorials-heading-copy h2 { font-size: clamp(23px, 2.4vw, 30px); }
 .tutorials-heading-copy p { max-width: 680px; font-size: 15px; }
 .tutorials-heading-meta { display: flex; align-items: center; gap: 12px; }
 .tutorials-count {
-  flex: none;
-  padding: 6px 11px;
-  border: 1px solid rgba(94, 231, 255, 0.24);
-  border-radius: 999px;
-  color: var(--accent);
-  background: rgba(94, 231, 255, 0.07);
-  font-size: 14px;
-  font-weight: 600;
-  white-space: nowrap;
+  flex: none; padding: 6px 11px; border: 1px solid rgba(94, 231, 255, 0.24); border-radius: 999px;
+  color: var(--accent); background: rgba(94, 231, 255, 0.07); font-size: 14px; font-weight: 600; white-space: nowrap;
 }
 .tutorials-search-wrap { position: relative; display: block; width: min(270px, 28vw); }
 .tutorials-search { padding: 9px 12px 9px 36px; font-size: 15px; }
 .tutorials-search-icon { position: absolute; z-index: 1; left: 13px; top: 50%; transform: translateY(-53%); color: var(--text-faint); font-size: 23px; pointer-events: none; }
-
-.tutorials-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 310px), 1fr));
-  align-items: stretch;
-  gap: 12px;
-}
-
+.tutorials-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 310px), 1fr)); align-items: stretch; gap: 12px; }
 .tutorial-card {
-  display: flex;
-  min-width: 0;
-  flex-direction: column;
-  padding: 16px;
-  border-color: rgba(120, 160, 255, 0.19);
+  display: flex; min-width: 0; flex-direction: column; padding: 16px; border-color: rgba(120, 160, 255, 0.19);
   background: linear-gradient(145deg, rgba(255, 255, 255, 0.035), transparent 58%), var(--panel);
   transition: transform 160ms var(--ease-out), border-color 160ms var(--ease-out), box-shadow 160ms var(--ease-out), background 160ms var(--ease-out);
 }
-.tutorial-card:hover {
-  transform: translateY(-2px);
-  border-color: rgba(94, 231, 255, 0.42);
-  background: linear-gradient(145deg, rgba(94, 231, 255, 0.065), transparent 60%), var(--panel);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.16);
-}
+.tutorial-card:hover { transform: translateY(-2px); border-color: rgba(94, 231, 255, 0.42); background: linear-gradient(145deg, rgba(94, 231, 255, 0.065), transparent 60%), var(--panel); box-shadow: 0 12px 30px rgba(0, 0, 0, 0.16); }
 .tutorial-card-topline { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
 .tutorial-number { color: var(--text-faint); font-family: var(--mono); font-size: 13px; letter-spacing: 0.08em; }
-.tutorial-mascot {
-  width: 54px;
-  height: 54px;
-  padding: 4px;
-  border: 1px solid rgba(120, 160, 255, 0.2);
-  border-radius: 15px;
-  background: #f6f8ff;
-  object-fit: contain;
-}
+.tutorial-mascot { width: 54px; height: 54px; padding: 4px; border: 1px solid rgba(120, 160, 255, 0.2); border-radius: 15px; background: #f6f8ff; object-fit: contain; }
 .tutorial-card-content { flex: 1; min-width: 0; }
 .tutorial-card-content h3 { margin-bottom: 5px; font-size: 19px; }
 .tutorial-summary { min-height: 44px; color: var(--text-dim); font-size: 14px; line-height: 1.5; }
-.tutorial-equipment {
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
-  margin-top: 13px;
-  padding: 10px 11px;
-  border: 1px solid rgba(120, 160, 255, 0.12);
-  border-radius: 11px;
-  background: rgba(255, 255, 255, 0.025);
-  color: var(--text-faint);
-  font-size: 12px;
-  line-height: 1.45;
-}
+.tutorial-equipment { display: flex; align-items: flex-start; gap: 8px; margin-top: 13px; padding: 10px 11px; border: 1px solid rgba(120, 160, 255, 0.12); border-radius: 11px; background: rgba(255, 255, 255, 0.025); color: var(--text-faint); font-size: 12px; line-height: 1.45; }
 .tutorial-equipment-icon { flex: none; color: var(--accent); }
-.tutorial-open {
-  align-self: flex-start;
-  margin-top: 14px;
-  padding: 7px 10px;
-  color: var(--accent);
-  font-size: 14px;
-}
+.tutorial-open { align-self: flex-start; margin-top: 14px; padding: 7px 10px; color: var(--accent); font-size: 14px; }
 .tutorial-open:hover { color: var(--text); }
 .tutorial-open span { transition: transform 150ms ease; }
 .tutorial-open:hover span { transform: translateX(3px); }
-.tutorials-note {
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
-  margin-top: 14px;
-  color: var(--text-faint);
-  font-size: 13px;
-}
+.tutorials-note { display: flex; align-items: flex-start; gap: 8px; margin-top: 14px; color: var(--text-faint); font-size: 13px; }
 .tutorials-note span { flex: none; color: var(--info); }
-.tutorials-empty {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 24px;
-  color: var(--text-dim);
-}
+.tutorials-empty { display: flex; align-items: center; gap: 12px; padding: 24px; color: var(--text-dim); }
 .tutorials-empty > span { color: var(--accent); font-size: 25px; }
-
 @media (max-width: 720px) {
   .tutorials-heading { align-items: stretch; flex-direction: column; }
   .tutorials-heading-meta { justify-content: space-between; }
   .tutorials-search-wrap { width: min(300px, 65vw); }
 }
-
 @media (max-width: 480px) {
   .tutorials-heading { padding: 15px; }
   .tutorials-heading-meta { align-items: stretch; flex-direction: column; }
