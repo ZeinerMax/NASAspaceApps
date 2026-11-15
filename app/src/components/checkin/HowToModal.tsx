@@ -5,7 +5,9 @@ import { Modal, VerifyTag } from '../common';
 
 // Tutorial videos live in the repository root (outside Vite's app/public directory).
 const TUTORIAL_VIDEO: Record<string, string> = {
-  bp: 'https://raw.githubusercontent.com/ZeinerMax/NASAspaceApps/main/blood_presure.mp4',
+  bp: 'https://raw.githubusercontent.com/ZeinerMax/NASAspaceApps/main/BloodPressure.mp4',
+  hr: 'https://raw.githubusercontent.com/ZeinerMax/NASAspaceApps/main/HeartRate.mp4',
+  glucose: 'https://raw.githubusercontent.com/ZeinerMax/NASAspaceApps/main/BloodSugar.mp4',
   mass: 'https://raw.githubusercontent.com/ZeinerMax/NASAspaceApps/main/BodyMass.mp4',
   temp: 'https://raw.githubusercontent.com/ZeinerMax/NASAspaceApps/main/BodyTemp.mp4',
   food: 'https://raw.githubusercontent.com/ZeinerMax/NASAspaceApps/main/FoodInTake.mp4',
